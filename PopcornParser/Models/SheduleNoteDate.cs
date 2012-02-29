@@ -7,5 +7,8 @@ namespace Popcorn.Models.ParsingModels
         public DateTime DateTimeStart { get; set; }
 
         public DateTime DateTimeStop { get; set; }
+
+        public string Hall { get; set; }
+
     }
 }

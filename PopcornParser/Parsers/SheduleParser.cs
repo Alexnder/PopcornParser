@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Popcorn.Models.ParsingModels;
+using LumenWorks.Framework.IO.Csv;
 
 namespace Popcorn.ServiceLayer
 {
     interface SheduleParser
     {
-        Cinema parse(string[] lines);
+        void parse(CsvReader csv);
     }
 }

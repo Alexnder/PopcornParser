@@ -7,6 +7,7 @@ using Popcorn.Models.ParsingModels;
 
 namespace Popcorn.ServiceLayer
 {
+    /*
     public class VoxParser : SheduleParser
     {
         public Cinema parse(string[] lines)
@@ -24,4 +25,5 @@ namespace Popcorn.ServiceLayer
             return cinema;
         }
     }
+     * */
 }

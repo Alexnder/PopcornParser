@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LumenWorks.Framework.IO">
+      <HintPath>..\..\..\CsvReader_src\LumenWorks.Framework.IO\bin\Debug\LumenWorks.Framework.IO.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +49,8 @@
     <Compile Include="Models\Cinema.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Models\SheduleNoteDate.cs" />
+    <Compile Include="Parsers\GrandParser.cs" />
+    <Compile Include="Parsers\FieldsParser.cs" />
     <Compile Include="Parsers\SheduleParser.cs" />
     <Compile Include="Parsers\VoxParser.cs" />
     <Compile Include="Program.cs" />
