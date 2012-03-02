@@ -22,16 +22,19 @@ namespace PopcornParser
             //string path = ""; //path to the source file
 
             SheduleParser parser;
-
-            csv = new CsvReader(new StreamReader(@"test1.csv"), false);
-
-            Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
-
-            if (csv.FieldCount == 13)
+            if (File.Exists("test1.csv"))
             {
-                parser = new GrandParser();
-                parser.parse(csv);
+                csv = new CsvReader(new StreamReader(@"test2.csv"), false);
+
+                Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
+
+                if (csv.FieldCount == 13)
+                {
+                    parser = new GrandParser();
+                    parser.parse(csv);
+                }
             }
+            //Console.WriteLine(CinemaList[0].Name);
             
         }
     }

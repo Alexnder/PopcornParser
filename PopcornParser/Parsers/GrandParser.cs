@@ -11,24 +11,11 @@ namespace Popcorn.ServiceLayer
 {
     class GrandParser : SheduleParser
     {
-        bool datetime_parse(string TimeString)
-        {
-            //TODO: This
-            //TimeString.match()
-            try
-            {
-                DateTime.TryParse(TimeString, out StartDate);
-                DateTime.TryParse(TimeString, out StartDate);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
-
         DateTime StartDate;
-        DateTime EndDate;
+
+        Movie movie;
+
+        Cinema cinema;
 
         public void parse(CsvReader csv)
         {
@@ -37,10 +24,15 @@ namespace Popcorn.ServiceLayer
                 int index = FieldsParser.one_field_parse(csv);
                 if (index > -1)
                 {
-                    Cinema cinema = new Cinema();
-                    cinema.Name = csv[index];
+                    if (cinema == null)
+                    {
+                        cinema = new Cinema();
+                        cinema.Name = csv[index];
+                        cinema.Movies = new List<Movie>();
+                    }
                     csv.ReadNextRecord();
-                    //datetime_parse(csv[FieldsParser.one_field_parse(csv)]);
+                    if ((index = FieldsParser.one_field_parse(csv)) > 0)
+                        FieldsParser.GrandParseDate(csv[index],out StartDate);
 
                     do csv.ReadNextRecord();
                     while ((csv[0] != "CIN" && csv[0] != "CINE"));
@@ -48,20 +40,28 @@ namespace Popcorn.ServiceLayer
                     //Parse Movies
                     while (csv.ReadNextRecord())
                     {
-                        Console.WriteLine(csv[1]);
-                        if (FieldsParser.one_field_parse(csv) > 0 )
+                        if (csv[1] != "" && csv[2] != "")
+                        {
+                            movie = new Movie();
+                            movie.Tittle = csv[1];
+                            movie.TimeInMinutes = 0;    //TODO: this
+                            movie.Rating = csv[3];
+                            movie.NowShowing = true;
+                            Console.WriteLine("{0} {1} {2}", csv[1], csv[2], csv[3]);
+                            cinema.Movies.Add(movie);
+                        }
+                        if ((index = FieldsParser.one_field_parse(csv)) > 0)
+                        {
+                            Program.CinemaList.Add(cinema);
+                            cinema = new Cinema();
+                            cinema.Name = csv[index];
+                            cinema.Movies = new List<Movie>();
                             break;
-                    }
-
-                    
+                        }
+                    }  
                 }
-
-
-
-                //for (int i = 0; i < csv.FieldCount; i++)
-                //    Console.Write(csv[i]);
-                //Console.WriteLine();
             }
+            Program.CinemaList.Add(cinema);
         }
     }
 }
