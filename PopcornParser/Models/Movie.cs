@@ -14,5 +14,21 @@ namespace Popcorn.Models.ParsingModels
         public int TimeInMinutes { get; set; }
 
         public List<SheduleNoteDate> SheduleNoteDates { get; set; }
+
+        public Movie()
+        {
+
+            Tittle = "";
+
+            Rating = "";
+
+            NowShowing = true;
+
+            TimeInMinutes = 0;
+
+            SheduleNoteDates = new List<SheduleNoteDate>();
+
+        }
+
     }
 }

@@ -17,14 +17,16 @@ namespace PopcornParser
 
         public static List<Cinema> CinemaList = new List<Cinema>();
 
+        public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "IMAX", "The Picturehouse", "Platinum movie suites" };
+            
         static void Main(string[] args)
         {
             //string path = ""; //path to the source file
 
             SheduleParser parser;
-            if (File.Exists("test1.csv"))
+            if (File.Exists("test4.csv"))
             {
-                csv = new CsvReader(new StreamReader(@"test2.csv"), false);
+                csv = new CsvReader(new StreamReader(@"test4.csv"), false);
 
                 Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
 
@@ -34,7 +36,32 @@ namespace PopcornParser
                     parser.parse(csv);
                 }
             }
-            //Console.WriteLine(CinemaList[0].Name);
+            else
+                Console.WriteLine("File not exised");
+
+            //Out parsed information
+            Console.WriteLine();
+            Console.WriteLine("Parsed cinemas and movies:");
+            foreach (Cinema cinema in CinemaList)
+            {
+                Console.WriteLine("______________________________________");
+                Console.WriteLine(cinema.Name);
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine("{0,-28}|{1,-4}|{2,-4}", "Tittle", "Time", "Rate");
+                Console.WriteLine("--------------------------------------");
+
+                foreach (Movie movie in cinema.Movies)
+                {
+                    Console.WriteLine("{0,-28} {1,-4} {2,-4}",movie.Tittle, movie.TimeInMinutes, movie.Rating);
+
+                    foreach (SheduleNoteDate show in movie.SheduleNoteDates)
+                    {
+                        Console.WriteLine("{0,-20}; Hall:{1}", show.DateTimeStart, show.Hall);
+                    }
+                }
+                Console.WriteLine();
+            }
+           
             
         }
     }

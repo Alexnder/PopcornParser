@@ -8,5 +8,13 @@ namespace Popcorn.Models.ParsingModels
 
         public string Hall { get; set; }
 
+        public SheduleNoteDate()
+        {
+
+            DateTimeStart = new DateTime();
+
+            Hall = "";
+
+        }
     }
 }
