@@ -104,7 +104,7 @@ namespace Popcorn.ServiceLayer
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
                                         if (csv[5] == "" && csv[6] == "")
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
-                                        if (Program.Halls.Contains(csv[0]))
+                                        if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
                                             NoteDate.Hall = csv[0];
                                         movie.SheduleNoteDates.Add(NoteDate);
                                     }

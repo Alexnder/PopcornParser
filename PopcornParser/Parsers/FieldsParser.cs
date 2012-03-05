@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using LumenWorks.Framework.IO.Csv;
-
+using Popcorn.Models.ParsingModels;
 
 namespace Popcorn.ServiceLayer
 {
@@ -87,6 +87,35 @@ namespace Popcorn.ServiceLayer
             return false;
         }
 
+
+        public static bool VoxParseDate(string TextToSplit, out DateTime Start)
+        {
+            /* 
+             * It is parse time line in Grand's file? and save it in Start
+             * Return true, if all goes well. false otherwise
+             */
+            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
+
+            if (matches.Count < 2)
+            {
+                Start = new DateTime();
+                return false;
+            }
+
+            if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
+                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                Console.WriteLine("GrandParseDate Ok: {0}", Start.ToShortDateString());
+
+                return true;
+            }
+            else
+                Console.WriteLine("GrandParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
+
+            return false;
+        }
+
+
         public static int ParseMovieDuration(string TextFilmTime)
         {
             /* 
@@ -95,6 +124,32 @@ namespace Popcorn.ServiceLayer
              */
 
             DateTime FilmTime;
+            // With AM/PM
+            //Parse hh:mm full... 01:30 example
+            if (DateTime.TryParseExact(TextFilmTime,
+                "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+            else if (DateTime.TryParseExact(TextFilmTime,
+                "hh:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+
+            //Parse h:mm... 1:30 example
+            if (DateTime.TryParseExact(TextFilmTime,
+                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+            else if (DateTime.TryParseExact(TextFilmTime,
+                "h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+
+            //Without AM/PM
             //Parse hh:mm full... 01:30 example
             if (DateTime.TryParseExact(TextFilmTime,
                 "hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
@@ -132,12 +187,12 @@ namespace Popcorn.ServiceLayer
              * Return true, if all goes well. false otherwise
              */
             if (DateTime.TryParseExact(TextToSplit,
-                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+                "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
                 return 1;
             }
             else if (DateTime.TryParseExact(TextToSplit,
-                "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
                 return 1;
             }
@@ -184,7 +239,57 @@ namespace Popcorn.ServiceLayer
             //Console.WriteLine("Tryparse in ParseMovieStartTime() failed!");
             return -1;
         }
-        
+
+        //This need to DifferenceDayOfWeek()
+        public static int DayOfWeekNumber(string TextDayPresent)
+        {
+
+            if (String.Compare(DayOfWeek.Monday.ToString(), TextDayPresent) == 0)
+                return 1;
+            if (String.Compare(DayOfWeek.Thursday.ToString(), TextDayPresent) == 0)
+                return 2;
+            if (String.Compare(DayOfWeek.Wednesday.ToString(), TextDayPresent) == 0)
+                return 3;
+            if (String.Compare(DayOfWeek.Thursday.ToString(), TextDayPresent) == 0)
+                return 4;
+            if (String.Compare(DayOfWeek.Friday.ToString(), TextDayPresent) == 0)
+                return 5;
+            if (String.Compare(DayOfWeek.Saturday.ToString(), TextDayPresent) == 0)
+                return 6;
+            if (String.Compare(DayOfWeek.Sunday.ToString(), TextDayPresent) == 0)
+                return 7;
+            return 0;
+        }
+
+        public static int DifferenceDayOfWeek(string TextToSplit)
+        {
+            /* 
+             * It is parse film start time
+             * Return true, if all goes well. false otherwise
+             */
+
+            DateTime TempDateTime1;
+
+            DateTime TempDateTime2;
+
+            int result;
+
+            int increment;
+
+            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\w+)\\b|\\b(\\w+)$", RegexOptions.IgnoreCase);
+
+            if (matches.Count == 2)
+            {
+                if ((increment = DayOfWeekNumber(matches[0].Value)) > 0)
+
+                    if ((result = DayOfWeekNumber(matches[1].Value)) > 0)
+
+                        return (result - increment + 6) % 7;
+            }
+            
+            return -1;
+        }
+
     }
 }
 

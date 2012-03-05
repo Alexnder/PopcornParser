@@ -19,7 +19,7 @@ namespace PopcornParser
 
         public static List<Cinema> CinemaList = new List<Cinema>();
 
-        public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "IMAX", "The Picturehouse", "Platinum movie suites" };
+        public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "VOX GOLD", "IMAX", "The Picturehouse", "Platinum movie suites" };
             
         static void Main(string[] args)
         {
@@ -27,12 +27,13 @@ namespace PopcornParser
 
             SheduleParser parser;
 
-            FileName = "test_grand.csv"; //TODO: Add cicle
+            FileName = "test_vox.csv"; //TODO: Add cicle
 
             if (File.Exists(FileName))
             {
                 csv = new CsvReader(new StreamReader(FileName), false);
 
+                //If delimiters are ";"
                 if (csv.FieldCount == 1)
                     csv = new CsvReader(new StreamReader(FileName), false, ';');
 
@@ -41,6 +42,12 @@ namespace PopcornParser
                 if (csv.FieldCount == 13 || csv.FieldCount == 15)
                 {
                     parser = new GrandParser();
+                    parser.parse(csv);
+                }
+
+                if (csv.FieldCount == 24)
+                {
+                    parser = new VoxParser();
                     parser.parse(csv);
                 }
             }
