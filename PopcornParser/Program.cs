@@ -13,6 +13,8 @@ namespace PopcornParser
 {
     class Program
     {
+        public static string FileName; 
+
         public static CsvReader csv;
 
         public static List<Cinema> CinemaList = new List<Cinema>();
@@ -24,13 +26,19 @@ namespace PopcornParser
             //string path = ""; //path to the source file
 
             SheduleParser parser;
-            if (File.Exists("test4.csv"))
+
+            FileName = "test_grand.csv"; //TODO: Add cicle
+
+            if (File.Exists(FileName))
             {
-                csv = new CsvReader(new StreamReader(@"test4.csv"), false);
+                csv = new CsvReader(new StreamReader(FileName), false);
+
+                if (csv.FieldCount == 1)
+                    csv = new CsvReader(new StreamReader(FileName), false, ';');
 
                 Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
 
-                if (csv.FieldCount == 13)
+                if (csv.FieldCount == 13 || csv.FieldCount == 15)
                 {
                     parser = new GrandParser();
                     parser.parse(csv);

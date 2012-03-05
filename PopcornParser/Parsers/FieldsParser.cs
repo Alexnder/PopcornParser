@@ -63,10 +63,16 @@ namespace Popcorn.ServiceLayer
              * It is parse time line in Grand's file? and save it in Start
              * Return true, if all goes well. false otherwise
              */
-            TextToSplit = TextToSplit.Substring(0, 2) + TextToSplit.Substring(4);
-            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\w+ \\w+ \\d+)", RegexOptions.IgnoreCase);
+            if(TextToSplit[2] != ' ')
+                TextToSplit = TextToSplit.Substring(0, 2) + TextToSplit.Substring(4);
+            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+ \\d+)", RegexOptions.IgnoreCase);
             //if (matches.Count == 1)
             //{
+            if (matches.Count == 0)
+            {
+                Start = new DateTime();
+                return false;
+            }
             if (DateTime.TryParseExact(matches[0].Value,
                 "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
@@ -89,7 +95,7 @@ namespace Popcorn.ServiceLayer
              */
 
             DateTime FilmTime;
-
+            //Parse hh:mm full... 01:30 example
             if (DateTime.TryParseExact(TextFilmTime,
                 "hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
             {
@@ -100,6 +106,19 @@ namespace Popcorn.ServiceLayer
             {
                 return FilmTime.Hour * 60 + FilmTime.Minute;
             }
+
+            //Parse h:mm... 1:30 example
+            if (DateTime.TryParseExact(TextFilmTime,
+                "h:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+            else if (DateTime.TryParseExact(TextFilmTime,
+                "h:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            {
+                return FilmTime.Hour * 60 + FilmTime.Minute;
+            }
+            
             
             Console.WriteLine("Tryparse in ParseMovieDuration() failed!");
 
@@ -113,6 +132,11 @@ namespace Popcorn.ServiceLayer
              * Return true, if all goes well. false otherwise
              */
             if (DateTime.TryParseExact(TextToSplit,
+                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
+            else if (DateTime.TryParseExact(TextToSplit,
                 "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
                 return 1;
@@ -123,11 +147,20 @@ namespace Popcorn.ServiceLayer
             {
                 return 1;
             }
+            else if (DateTime.TryParseExact(TextToSplit,
+            "h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
 
-            if (TextToSplit.Substring(0,2) == "12") 
-                TextToSplit += " PM";
-            else
-                TextToSplit += " AM";
+            if (TextToSplit.Length > 1)
+            {
+                if (TextToSplit.Substring(0,2) == "12") 
+                    TextToSplit += " PM";
+                else
+                    TextToSplit += " AM";
+            }
+
             if (DateTime.TryParseExact(TextToSplit,
             "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
@@ -135,6 +168,16 @@ namespace Popcorn.ServiceLayer
             }
             else if (DateTime.TryParseExact(TextToSplit,
             "hh:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 0;
+            }
+            if (DateTime.TryParseExact(TextToSplit,
+            "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 0;
+            }
+            else if (DateTime.TryParseExact(TextToSplit,
+            "h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
                 return 0;
             }

@@ -47,8 +47,12 @@ namespace Popcorn.ServiceLayer
                         }
                     }
 
-                    do csv.ReadNextRecord();
-                    while ((csv[0] != "CIN" && csv[0] != "CINE"));
+                    for (int i = 0; i < 10; i++)
+                    {
+                        csv.ReadNextRecord();
+                        if ((csv[0] == "CIN" || csv[0] == "CINE")) 
+                            break;
+                    }
 
                     //Parse Movies
                     while (csv.ReadNextRecord())
@@ -83,6 +87,10 @@ namespace Popcorn.ServiceLayer
                                             Factor++;
 
                                         }
+                                        //If the movie starts in the afternoon
+                                        if (i == 6 && csv[5] == "" && CurrentDate.Hour < 6)
+                                            Factor++;
+
                                         LastHour = CurrentDate.Hour;
                                         CurrentDate = CurrentDate.AddHours(Factor * 12);
                                         
@@ -91,6 +99,7 @@ namespace Popcorn.ServiceLayer
                                     {
                                         SheduleNoteDate NoteDate = new SheduleNoteDate();
                                         NoteDate.DateTimeStart = StartDate + new TimeSpan(CurrentDate.Hour, CurrentDate.Minute, CurrentDate.Second);
+                                        
                                         if (Factor == 2)
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
                                         if (csv[5] == "" && csv[6] == "")
