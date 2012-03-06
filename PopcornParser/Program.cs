@@ -27,7 +27,7 @@ namespace PopcornParser
 
             SheduleParser parser;
 
-            FileName = "test_vox.csv"; //TODO: Add cicle
+            FileName = "test2.csv"; //TODO: Add cicle
 
             if (File.Exists(FileName))
             {

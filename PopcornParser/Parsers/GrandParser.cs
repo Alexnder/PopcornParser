@@ -97,16 +97,26 @@ namespace Popcorn.ServiceLayer
                                     }
                                     if (index >= 0)
                                     {
-                                        SheduleNoteDate NoteDate = new SheduleNoteDate();
-                                        NoteDate.DateTimeStart = StartDate + new TimeSpan(CurrentDate.Hour, CurrentDate.Minute, CurrentDate.Second);
+                                        //Add all days of week 
+                                        for (double day = 0; day < 7; day++)
+                                        {
+
+                                            SheduleNoteDate NoteDate = new SheduleNoteDate();
+                                            NoteDate.DateTimeStart = StartDate + new TimeSpan(CurrentDate.Hour, CurrentDate.Minute, CurrentDate.Second);
                                         
-                                        if (Factor == 2)
-                                            NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
-                                        if (csv[5] == "" && csv[6] == "")
-                                            NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
-                                        if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
-                                            NoteDate.Hall = csv[0];
-                                        movie.SheduleNoteDates.Add(NoteDate);
+                                            if (Factor == 2)
+                                                NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
+                                            if (csv[5] == "" && csv[6] == "")
+                                                NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
+
+                                            NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddDays(day);
+
+                                            if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
+                                                NoteDate.Hall = csv[0];
+                                        
+                                            movie.SheduleNoteDates.Add(NoteDate);
+
+                                        }
                                     }
                                     
                                 }
