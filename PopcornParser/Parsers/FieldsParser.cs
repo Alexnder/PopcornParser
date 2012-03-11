@@ -43,11 +43,11 @@ namespace Popcorn.ServiceLayer
              * It is parse time line in Royal's file? and save it in Start
              * Return true, if all goes well. false otherwise
              */
-            MatchCollection matches = Regex.Matches(TextToSplit, "\\b(\\w+ \\d+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
+            MatchCollection matches = Regex.Matches(TextToSplit, "\\b(\\w+ \\d+)|\\b(\\d){4}$", RegexOptions.IgnoreCase);
 
-            if (matches.Count == 2)
+            if (matches.Count == 3)
             {
-                if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
+                if (DateTime.TryParseExact(matches[0].Value + " " + matches[2].Value,
                     "MMM dd yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
                 {
                     return true;

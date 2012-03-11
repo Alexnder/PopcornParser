@@ -51,6 +51,7 @@
     <Compile Include="Models\SheduleNoteDate.cs" />
     <Compile Include="Parsers\GrandParser.cs" />
     <Compile Include="Parsers\FieldsParser.cs" />
+    <Compile Include="Parsers\RoyalParser.cs" />
     <Compile Include="Parsers\SheduleParser.cs" />
     <Compile Include="Parsers\VoxParser.cs" />
     <Compile Include="Program.cs" />

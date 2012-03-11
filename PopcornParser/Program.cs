@@ -27,7 +27,7 @@ namespace PopcornParser
 
             SheduleParser parser;
 
-            FileName = "test2.csv"; //TODO: Add cicle
+            FileName = "test_royal.csv"; //TODO: Add cicle
 
             if (File.Exists(FileName))
             {
@@ -38,6 +38,12 @@ namespace PopcornParser
                     csv = new CsvReader(new StreamReader(FileName), false, ';');
 
                 Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
+
+                if (csv.FieldCount == 9)
+                {
+                    parser = new RoyalParser();
+                    parser.parse(csv);
+                }
 
                 if (csv.FieldCount == 13 || csv.FieldCount == 15)
                 {
