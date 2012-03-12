@@ -11,15 +11,7 @@ namespace Popcorn.ServiceLayer
 {
     class GrandParser : SheduleParser
     {
-        DateTime StartDate;
-
-        DateTime CurrentDate;
-
-        Movie movie;
-
-        Cinema cinema;
-
-        public void parse(CsvReader csv)
+        public override void parse(CsvReader csv)
         {
             while (csv.ReadNextRecord())
             {

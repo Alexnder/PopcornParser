@@ -11,23 +11,7 @@ namespace Popcorn.ServiceLayer
 {
     class RoyalParser : SheduleParser
     {
-
-        DateTime StartDate;
-
-        DateTime CurrentDate;
-
-        Movie movie;
-
-        Cinema cinema;
-
-        static int IsMidnight(int num)
-        {
-            if (num < 3)
-                return 1;
-            return 0;
-        }
-
-        public void parse(CsvReader csv)
+        public override void parse(CsvReader csv)
         {
             string CurrentHall = "";
 
@@ -79,7 +63,7 @@ namespace Popcorn.ServiceLayer
                                     if ((FieldsParser.ParseMovieStartTime(csv[k + 2], out CurrentDate)) == 1)
                                     {
                                         SheduleNoteDate NoteDate = new SheduleNoteDate();
-                                        NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(i + IsMidnight(CurrentDate.Hour));
+                                        NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(i + FieldsParser.IsMidnight(CurrentDate.Hour));
                                         NoteDate.Hall = CurrentHall;
                                         movie.SheduleNoteDates.Add(NoteDate);
                                     }

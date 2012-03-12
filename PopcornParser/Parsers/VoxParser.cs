@@ -12,25 +12,9 @@ namespace Popcorn.ServiceLayer
             
     public class VoxParser : SheduleParser
     {
-
-        DateTime StartDate;
-
-        DateTime CurrentDate;
-
-        Movie movie;
-
-        Cinema cinema;
-
         int DayCount; //Counter of first row days in VOX file.. Some "Thursday to Saturday" = 3
 
-        static int IsMidnight(int num)
-        {
-            if (num < 3)
-                return 1;
-            return 0;
-        }
-
-        public void parse(CsvReader csv)
+        public override void parse(CsvReader csv)
         {
 
             int index = 0;
@@ -121,7 +105,7 @@ namespace Popcorn.ServiceLayer
                             if ((FieldsParser.ParseMovieStartTime(csv[2 + i * 6], out CurrentDate)) == 1)
                             {
                                 SheduleNoteDate NoteDate = new SheduleNoteDate();
-                                NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + IsMidnight(CurrentDate.Hour));
+                                NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + FieldsParser.IsMidnight(CurrentDate.Hour));
                                 if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
                                     NoteDate.Hall = csv[0];
                                 movie.SheduleNoteDates.Add(NoteDate);

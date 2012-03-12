@@ -267,11 +267,7 @@ namespace Popcorn.ServiceLayer
              * It is parse film start time
              * Return true, if all goes well. false otherwise
              */
-
-            DateTime TempDateTime1;
-
-            DateTime TempDateTime2;
-
+            
             int result;
 
             int increment;
@@ -288,6 +284,13 @@ namespace Popcorn.ServiceLayer
             }
             
             return -1;
+        }
+
+        public static int IsMidnight(int num)
+        {
+            if (num < 3)
+                return 1;
+            return 0;
         }
 
     }

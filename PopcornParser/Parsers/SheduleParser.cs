@@ -7,8 +7,16 @@ using LumenWorks.Framework.IO.Csv;
 
 namespace Popcorn.ServiceLayer
 {
-    interface SheduleParser
+    public abstract class SheduleParser
     {
-        void parse(CsvReader csv);
+        public DateTime StartDate;
+
+        public DateTime CurrentDate;
+
+        public Movie movie;
+
+        public Cinema cinema;
+
+        public abstract void parse(CsvReader csv);
     }
 }
