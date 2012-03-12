@@ -103,8 +103,7 @@ namespace Popcorn.ServiceLayer
 
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddDays(day);
 
-                                            if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
-                                                NoteDate.Hall = csv[0];
+                                            NoteDate.Hall = FieldsParser.HallChoice(csv[0]);
                                         
                                             movie.SheduleNoteDates.Add(NoteDate);
 

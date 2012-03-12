@@ -48,8 +48,8 @@ namespace Popcorn.ServiceLayer
                         {
                             movie = new Movie();
 
-                            //TODO Hall choice
-                            CurrentHall = "";
+                            //Hall choice
+                            CurrentHall = FieldsParser.HallChoice(csv[0]);
 
                             csv.ReadNextRecord();
 

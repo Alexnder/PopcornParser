@@ -66,8 +66,6 @@ namespace Popcorn.ServiceLayer
             if(TextToSplit[2] != ' ')
                 TextToSplit = TextToSplit.Substring(0, 2) + TextToSplit.Substring(4);
             MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+ \\d+)", RegexOptions.IgnoreCase);
-            //if (matches.Count == 1)
-            //{
             if (matches.Count == 0)
             {
                 Start = new DateTime();
@@ -76,14 +74,11 @@ namespace Popcorn.ServiceLayer
             if (DateTime.TryParseExact(matches[0].Value,
                 "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
-                Console.WriteLine("GrandParseDate Ok: {0}",Start.ToShortDateString());
-
                 return true;
             }
             else
                 Console.WriteLine("GrandParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value);
-            //}
-
+            
             return false;
         }
 
@@ -99,18 +94,17 @@ namespace Popcorn.ServiceLayer
             if (matches.Count < 2)
             {
                 Start = new DateTime();
+                Console.WriteLine("VoxParseDate() crash");
                 return false;
             }
 
             if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
                 "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
-                Console.WriteLine("GrandParseDate Ok: {0}", Start.ToShortDateString());
-
                 return true;
             }
             else
-                Console.WriteLine("GrandParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
+                Console.WriteLine("VoxParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
 
             return false;
         }
@@ -291,6 +285,16 @@ namespace Popcorn.ServiceLayer
             if (num < 3)
                 return 1;
             return 0;
+        }
+
+        public static string HallChoice(string PossibleHallName)
+        {
+            foreach (string HallName in PopcornParser.Program.Halls)
+            {
+                if (string.Compare(PossibleHallName, 0, HallName, 0, HallName.Length, true) == 0)
+                    return HallName;
+            }
+            return "";
         }
 
     }

@@ -13,74 +13,86 @@ namespace PopcornParser
 {
     class Program
     {
-        public static string FileName; 
 
         public static CsvReader csv;
 
         public static List<Cinema> CinemaList = new List<Cinema>();
 
-        public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "VOX GOLD", "IMAX", "The Picturehouse", "Platinum movie suites" };
+        public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "VOX GOLD", "IMAX", "The Picturehouse", "Platinum" };
             
         static void Main(string[] args)
         {
-            //string path = ""; //path to the source file
-
+            
             SheduleParser parser;
 
-            FileName = "test_royal.csv"; //TODO: Add cicle
-
-            if (File.Exists(FileName))
+            //Parse
+            try
             {
-                csv = new CsvReader(new StreamReader(FileName), false);
-
-                //If delimiters are ";"
-                if (csv.FieldCount == 1)
-                    csv = new CsvReader(new StreamReader(FileName), false, ';');
-
-                Console.WriteLine("Number of rows is:{0}", csv.FieldCount);
-
-                if (csv.FieldCount == 9)
-                {
-                    parser = new RoyalParser();
-                    parser.parse(csv);
-                }
-
-                if (csv.FieldCount == 13 || csv.FieldCount == 15)
-                {
-                    parser = new GrandParser();
-                    parser.parse(csv);
-                }
-
-                if (csv.FieldCount == 24)
-                {
-                    parser = new VoxParser();
-                    parser.parse(csv);
-                }
-            }
-            else
-                Console.WriteLine("File not exised");
-
-            //Out parsed information
-            Console.WriteLine();
-            Console.WriteLine("Parsed cinemas and movies:");
-            foreach (Cinema cinema in CinemaList)
-            {
-                Console.WriteLine("______________________________________");
-                Console.WriteLine(cinema.Name);
-                Console.WriteLine("--------------------------------------");
-                Console.WriteLine("{0,-28}|{1,-4}|{2,-4}", "Tittle", "Time", "Rate");
-                Console.WriteLine("--------------------------------------");
-
-                foreach (Movie movie in cinema.Movies)
-                {
-                    Console.WriteLine("{0,-28} {1,-4} {2,-4}",movie.Tittle, movie.TimeInMinutes, movie.Rating);
-
-                    foreach (SheduleNoteDate show in movie.SheduleNoteDates)
+                foreach (string FileName in Directory.GetFiles(@".", "*.csv", SearchOption.AllDirectories))
+                    if (File.Exists(FileName))
                     {
-                        Console.WriteLine("{0,-20}; Hall:{1}", show.DateTimeStart, show.Hall);
+                        csv = new CsvReader(new StreamReader(FileName), false);
+
+                        //If delimiters are ";"
+                        if (csv.FieldCount == 1)
+                            csv = new CsvReader(new StreamReader(FileName), false, ';');
+
+                        switch (csv.FieldCount)
+                        {
+                            case 9:
+                                parser = new RoyalParser();
+                                break;
+                            //case 12:
+                            //    parser = new GrandPoorParser();
+                            //    break;
+                            case 13:
+                                parser = new GrandParser();
+                                break;
+                            case 15:
+                                parser = new GrandParser();
+                                break;
+                            case 24:
+                                parser = new VoxParser();
+                                break;
+                            default:
+                                Console.WriteLine("Number of rows is:{0}\n This is error number and don't parse", csv.FieldCount);
+                                continue;
+                        }
+                            
+                        parser.parse(csv);
                     }
+                    else
+                        Console.WriteLine("File not exised");
+            }
+            catch
+            {
+                Console.WriteLine("One error occuared");
+            }
+
+            //Out parsed information into "OUT.txt"
+            using (StreamWriter sw = new StreamWriter("OUT.txt"))
+            {
+                sw.WriteLine();
+                sw.WriteLine("Parsed cinemas and movies:");
+                foreach (Cinema cinema in CinemaList)
+                {
+                    sw.WriteLine("______________________________________");
+                    sw.WriteLine(cinema.Name);
+                    sw.WriteLine("--------------------------------------");
+                    sw.WriteLine("{0,-28}|{1,-4}|{2,-4}", "Tittle", "Time", "Rate");
+                    sw.WriteLine("--------------------------------------");
+
+                    foreach (Movie movie in cinema.Movies)
+                    {
+                        sw.WriteLine("{0,-28} {1,-4} {2,-4}",movie.Tittle, movie.TimeInMinutes, movie.Rating);
+
+                        foreach (SheduleNoteDate show in movie.SheduleNoteDates)
+                        {
+                            sw.WriteLine("{0,-20}; Hall: {1}", show.DateTimeStart, show.Hall);
+                        }
+                    }
+                    sw.WriteLine();
                 }
-                Console.WriteLine();
             }
            
             

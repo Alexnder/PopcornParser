@@ -106,8 +106,7 @@ namespace Popcorn.ServiceLayer
                             {
                                 SheduleNoteDate NoteDate = new SheduleNoteDate();
                                 NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + FieldsParser.IsMidnight(CurrentDate.Hour));
-                                if (Program.Halls.Contains(csv[0])) //TODO: Add IgnoreCase
-                                    NoteDate.Hall = csv[0];
+                                NoteDate.Hall = FieldsParser.HallChoice(csv[0]);
                                 movie.SheduleNoteDates.Add(NoteDate);
 
                             }
