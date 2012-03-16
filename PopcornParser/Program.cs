@@ -14,76 +14,72 @@ namespace PopcornParser
     class Program
     {
 
-        public static CsvReader csv;
+        public static CsvReader Csv;
 
         public static List<Cinema> CinemaList = new List<Cinema>();
 
         public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "VOX GOLD", "IMAX", "The Picturehouse", "Platinum" };
 
-        //public static string[] Cinemas = new string[] { "VOX", "GRAND", "ROYAL", "GALLERIA CINEMA", "OSCAR CINEMAS", "BAWADI CINEMAS" };
-        public enum cinemalist { VOX, GRAND, ROYAL, GALLERIA, OSCAR, BAWADI };
+        //public static string[] Cinemas = new string[] { "VOX", "GRAND", "ROYAL", "GALLERIA", "OSCAR", "BAWADI" };
+        public enum Cinemalist { Vox, Grand, Royal, Galleria, Oscar, Bawadi };
             
         static void Main(string[] args)
         {
-            
-            SheduleParser parser; 
-
-            StreamReader StreamInputCSV;
-
-
             //Parse
             try
             {
-                foreach (string FileName in Directory.GetFiles(@".", "*.csv", SearchOption.AllDirectories))
-                    if (File.Exists(FileName))
+                foreach (string fileName in Directory.GetFiles(@".", "*.csv", SearchOption.AllDirectories))
+                    if (File.Exists(fileName))
                     {
-                        
-                        string CinemaName = ""; //Cinema identifer
+                        string cinemaName = ""; //Cinema identifer
 
                         try
                         {
                             //Finding cinema identifer
-                            using (StreamInputCSV = new StreamReader(FileName))
+                            StreamReader streamInputCsv;
+                            using (streamInputCsv = new StreamReader(fileName))
                             {
-                                for (string line = StreamInputCSV.ReadLine(); line != null; line = StreamInputCSV.ReadLine())
+                                for (string line = streamInputCsv.ReadLine(); line != null; line = streamInputCsv.ReadLine())
                                 {
-                                    if ((CinemaName = FieldsParser.CinemaChoice(line)) != "")
+                                    if ((cinemaName = FieldsParser.CinemaChoice(line)) != "")
                                         break;
                                 }
                             }
 
                             //If identifer not found
-                            if (CinemaName == "")
+                            if (cinemaName == "")
                                 continue;
 
-                            csv = new CsvReader(new StreamReader(FileName), false);
+                            Csv = new CsvReader(new StreamReader(fileName), false);
 
                             //If delimiters are ";"
-                            if (csv.FieldCount == 1)
-                                csv = new CsvReader(new StreamReader(FileName), false, ';');
+                            if (Csv.FieldCount == 1)
+                                Csv = new CsvReader(new StreamReader(fileName), false, ';');
                         }
                         catch
                         {
                             Console.WriteLine("Parse identifer not found");
                         }
 
-                        switch (CinemaName)
+                        SheduleParser parser;
+
+                        switch (cinemaName)
                         {
-                            case "ROYAL":
+                            case "Royal":
                                 parser = new RoyalParser();
                                 break;
 
-                            case "GRAND":
-                            case "GALLERIA":
-                            case "OSCAR":
-                            case "BAWADI":
+                            case "Grand":
+                            case "Galleria":
+                            case "Oscar":
+                            case "Bawadi":
                                 {
-                                    if (csv.FieldCount > 11 && csv.FieldCount < 15)
+                                    if (Csv.FieldCount > 11 && Csv.FieldCount < 15)
                                     {
                                         parser = new GrandPoorParser();
                                         break;
                                     }
-                                    else if (csv.FieldCount > 14 && csv.FieldCount < 18)
+                                    else if (Csv.FieldCount > 14 && Csv.FieldCount < 18)
                                     {
                                         parser = new GrandParser();
                                         break;
@@ -92,7 +88,7 @@ namespace PopcornParser
                                         continue;
                                 }
 
-                            case "VOX":
+                            case "Vox":
                                 parser = new VoxParser();
                                 break;
 
@@ -103,9 +99,9 @@ namespace PopcornParser
 
                         try
                         {
-                            parser.parse(csv);
+                            parser.Parse(Csv);
 
-                            csv.Dispose();
+                            Csv.Dispose();
                         }
                         catch
                         {

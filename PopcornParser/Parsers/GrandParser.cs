@@ -38,7 +38,7 @@ namespace Popcorn.ServiceLayer
             return false;
         }
 
-        public override void parse(CsvReader csv)
+        public override void Parse(CsvReader csv)
         {
             while (csv.ReadNextRecord())
             {
@@ -125,7 +125,7 @@ namespace Popcorn.ServiceLayer
 
                                             if (Factor == 2)
                                                 NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
-                                            if (csv[5] == "" && csv[6] == "")
+                                            if (csv[5] == "" && csv[6] == "" && index == 0)
                                                 NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
 
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddDays(day);

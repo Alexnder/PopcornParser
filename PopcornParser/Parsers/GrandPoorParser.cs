@@ -11,7 +11,7 @@ namespace Popcorn.ServiceLayer
 {
     class GrandPoorParser : GrandParser
     {
-        public override void parse(CsvReader csv)
+        public override void Parse(CsvReader csv)
         {
             while (csv.ReadNextRecord())
             {

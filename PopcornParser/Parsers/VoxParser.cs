@@ -15,45 +15,45 @@ namespace Popcorn.ServiceLayer
     public class VoxParser : SheduleParser
     {
        
-        protected static bool VoxParseDate(string TextToSplit, out DateTime Start)
+        protected static bool VoxParseDate(string textToSplit, out DateTime start)
         {
             /* 
              * It is parse time line in Grand's file? and save it in Start
              * Return true, if all goes well. false otherwise
              */
-            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
+            MatchCollection matches = Regex.Matches(textToSplit, "^(\\d+ \\w+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
 
             if (matches.Count < 2)
             {
-                Start = new DateTime();
+                start = new DateTime();
                 Console.WriteLine("VoxParseDate() crash");
                 return false;
             }
 
             if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
-                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out start))
             {
                 return true;
             }
             else
-                Console.WriteLine("VoxParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
+                Console.WriteLine("VoxParseDate: Before:{0} After:{1}", textToSplit, matches[0].Value + " " + matches[1].Value);
 
             return false;
         }
 
 
-        public override void parse(CsvReader csv)
+        public override void Parse(CsvReader csv)
         {
-            int DayCount = -1; //Counter of first row days in VOX file.. Some "Thursday to Saturday" = 3
+            int dayCount = -1; //Counter of first row days in VOX file.. Some "Thursday to Saturday" = 3
 
             int index = 0;
 
-            string LastFilm = "";
+            string lastFilm = "";
 
-            string CurrentHall = "";
+            string currentHall = "";
 
-            int HallCredit = 0;
-            
+            int hallCredit = 0;
+
             //Parse cinema
             for (int i = 0; i < 8; i++)
             {
@@ -68,7 +68,6 @@ namespace Popcorn.ServiceLayer
                 }
             }
 
-
             //Parse date
             for (int i = 0; i < 5; i++)
             {
@@ -81,7 +80,6 @@ namespace Popcorn.ServiceLayer
                     }
                 }
             }
-            
 
             //Parse day of weeks
             for (int i = 0; i < 2; i++)
@@ -89,11 +87,11 @@ namespace Popcorn.ServiceLayer
                 csv.ReadNextRecord();
                 for (int j = 0; j < csv.FieldCount; j++)
                 {
-                    DayCount = FieldsParser.DifferenceDayOfWeek(csv[j]);
-                    if (DayCount >= 0)
+                    dayCount = FieldsParser.DifferenceDayOfWeek(csv[j]);
+                    if (dayCount >= 0)
                         break;
                 }
-                if (DayCount >= 0)
+                if (dayCount >= 0)
                         break;
             }
 
@@ -113,10 +111,10 @@ namespace Popcorn.ServiceLayer
                     if (csv[1 + i * 6] != "" && csv[2 + i * 6] != "")
                     {
                         
-                        if (LastFilm != csv[1 + i * 6])
+                        if (lastFilm != csv[1 + i * 6])
                         {
                             //This Movie is not
-                            if (!cinema.Movies.Exists(temp_cinema => temp_cinema.Tittle == csv[1 + i * 6]))
+                            if (!cinema.Movies.Exists(tempCinema => tempCinema.Tittle == csv[1 + i * 6]))
                             {
                                 movie = new Movie();
 
@@ -131,44 +129,40 @@ namespace Popcorn.ServiceLayer
                             //This Movie is exist
                             else
                             {
-                                movie = cinema.Movies.Find(temp_cinema => temp_cinema.Tittle == csv[1 + i * 6]);
+                                movie = cinema.Movies.Find(tempCinema => tempCinema.Tittle == csv[1 + i * 6]);
                             }
 
-                            if (HallCredit <= 0)
-                                CurrentHall = "";
+                            if (hallCredit <= 0)
+                                currentHall = "";
 
                         }
 
-                       
-
-                        if (CurrentHall == "")
+                        if (currentHall == "")
                         {
-                            CurrentHall = FieldsParser.HallChoice(csv[0]);
+                            currentHall = FieldsParser.HallChoice(csv[0]);
 
-                            if (CurrentHall != "")
-                                HallCredit = 8;
+                            if (currentHall != "")
+                                hallCredit = 8;
                         }
-
-                        
 
                         // Parse SheduleNoteDates
-                        for (int k = (DayCount + 1) * i; k <= DayCount + i * (6 - DayCount); k++)
+                        for (int k = (dayCount + 1) * i; k <= dayCount + i * (6 - dayCount); k++)
                         {
                             if ((FieldsParser.ParseMovieStartTime(csv[2 + i * 6], out CurrentDate)) == 1)
                             {
-                                SheduleNoteDate NoteDate = new SheduleNoteDate();
-                                NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + FieldsParser.IsMidnight(CurrentDate.Hour));
-                                NoteDate.Hall = CurrentHall;
-                                movie.SheduleNoteDates.Add(NoteDate);
+                                SheduleNoteDate noteDate = new SheduleNoteDate();
+                                noteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + FieldsParser.IsMidnight(CurrentDate.Hour));
+                                noteDate.Hall = currentHall;
+                                movie.SheduleNoteDates.Add(noteDate);
 
                             }
                         }
 
-                        LastFilm = csv[1 + i * 6];
+                        lastFilm = csv[1 + i * 6];
                     }
                 }
 
-                HallCredit--;
+                hallCredit--;
             }
 
             Program.CinemaList.Add(cinema);

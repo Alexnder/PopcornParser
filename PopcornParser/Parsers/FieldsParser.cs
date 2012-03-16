@@ -18,81 +18,81 @@ namespace Popcorn.ServiceLayer
              * Otherwise, -1 will be returned
              */
 
-            string FieldName = "";
+            string fieldName = "";
 
-            int FieldIndex = -1;
+            int fieldIndex = -1;
 
             for (int i = 0; i < csv.FieldCount; i++)
                 if (csv[i] != "")
-                    if (FieldName == "")
+                    if (fieldName == "")
                     {
-                        FieldName = csv[i];
+                        fieldName = csv[i];
 
-                        FieldIndex = i;
+                        fieldIndex = i;
                     }
 
                     else
                         return -1;
-            return FieldIndex;
+            return fieldIndex;
 
         }
 
-        public static int ParseMovieDuration(string TextFilmTime)
+        public static int ParseMovieDuration(string textFilmTime)
         {
             /* 
              * It is parse film time line
              * Return film time, if all goes well. 0 otherwise
              */
 
-            DateTime FilmTime;
+            DateTime filmTime;
             // With AM/PM
             //Parse hh:mm full... 01:30 example
-            if (DateTime.TryParseExact(TextFilmTime,
-                "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            if (DateTime.TryParseExact(textFilmTime,
+                "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
-            else if (DateTime.TryParseExact(TextFilmTime,
-                "hh:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            else if (DateTime.TryParseExact(textFilmTime,
+                "hh:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
 
             //Parse h:mm... 1:30 example
-            if (DateTime.TryParseExact(TextFilmTime,
-                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            if (DateTime.TryParseExact(textFilmTime,
+                "h:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
-            else if (DateTime.TryParseExact(TextFilmTime,
-                "h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            else if (DateTime.TryParseExact(textFilmTime,
+                "h:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
 
             //Without AM/PM
             //Parse hh:mm full... 01:30 example
-            if (DateTime.TryParseExact(TextFilmTime,
-                "hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            if (DateTime.TryParseExact(textFilmTime,
+                "hh:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
-            else if (DateTime.TryParseExact(TextFilmTime,
-                "hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            else if (DateTime.TryParseExact(textFilmTime,
+                "hh:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
 
             //Parse h:mm... 1:30 example
-            if (DateTime.TryParseExact(TextFilmTime,
-                "h:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            if (DateTime.TryParseExact(textFilmTime,
+                "h:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
-            else if (DateTime.TryParseExact(TextFilmTime,
-                "h:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out FilmTime))
+            else if (DateTime.TryParseExact(textFilmTime,
+                "h:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out filmTime))
             {
-                return FilmTime.Hour * 60 + FilmTime.Minute;
+                return filmTime.Hour * 60 + filmTime.Minute;
             }
             
             
@@ -185,22 +185,22 @@ namespace Popcorn.ServiceLayer
         }
 
         //This need to DifferenceDayOfWeek()
-        public static int DayOfWeekNumber(string TextDayPresent)
+        public static int DayOfWeekNumber(string textDayPresent)
         {
 
-            if (String.Compare(DayOfWeek.Monday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Monday.ToString(), textDayPresent) == 0)
                 return 1;
-            if (String.Compare(DayOfWeek.Tuesday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Tuesday.ToString(), textDayPresent) == 0)
                 return 2;
-            if (String.Compare(DayOfWeek.Wednesday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Wednesday.ToString(), textDayPresent) == 0)
                 return 3;
-            if (String.Compare(DayOfWeek.Thursday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Thursday.ToString(), textDayPresent) == 0)
                 return 4;
-            if (String.Compare(DayOfWeek.Friday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Friday.ToString(), textDayPresent) == 0)
                 return 5;
-            if (String.Compare(DayOfWeek.Saturday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Saturday.ToString(), textDayPresent) == 0)
                 return 6;
-            if (String.Compare(DayOfWeek.Sunday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Sunday.ToString(), textDayPresent) == 0)
                 return 7;
             return 0;
         }
@@ -211,20 +211,20 @@ namespace Popcorn.ServiceLayer
              * It is parse film start time
              * Return true, if all goes well. false otherwise
              */
-            
-            int result;
-
-            int increment;
 
             MatchCollection matches = Regex.Matches(TextToSplit, "^(\\w+)\\b|\\b(\\w+)$", RegexOptions.IgnoreCase);
 
             if (matches.Count == 2)
             {
+                int increment;
                 if ((increment = DayOfWeekNumber(matches[0].Value)) > 0)
 
+                {
+                    int result;
                     if ((result = DayOfWeekNumber(matches[1].Value)) > 0)
 
                         return (result - increment + 7) % 7;
+                }
             }
 
             if (matches.Count == 1)
@@ -242,24 +242,24 @@ namespace Popcorn.ServiceLayer
             return 0;
         }
 
-        public static string HallChoice(string PossibleHallName)
+        public static string HallChoice(string possibleHallName)
         {
-            foreach (string HallName in PopcornParser.Program.Halls)
+            foreach (string hallName in PopcornParser.Program.Halls)
             {
-                for (int i=0; i <= PossibleHallName.Length - HallName.Length; i++)
-                    if (string.Compare(PossibleHallName, i, HallName, 0, HallName.Length, true) == 0)
-                        return HallName;
+                for (int i=0; i <= possibleHallName.Length - hallName.Length; i++)
+                    if (string.Compare(possibleHallName, i, hallName, 0, hallName.Length, true) == 0)
+                        return hallName;
             }
             return "";
         }
 
-        public static string CinemaChoice(string PossibleCinemaName)
+        public static string CinemaChoice(string possibleCinemaName)
         {
-            foreach (PopcornParser.Program.cinemalist CinemaName in Enum.GetValues(typeof(PopcornParser.Program.cinemalist)))
+            foreach (PopcornParser.Program.Cinemalist cinemaName in Enum.GetValues(typeof(PopcornParser.Program.Cinemalist)))
             {
-                for (int i = 0; i <= PossibleCinemaName.Length - CinemaName.ToString().Length; i++)
-                    if (string.Compare(PossibleCinemaName, i, CinemaName.ToString(), 0, CinemaName.ToString().Length, true) == 0)
-                        return CinemaName.ToString();
+                for (int i = 0; i <= possibleCinemaName.Length - cinemaName.ToString().Length; i++)
+                    if (string.Compare(possibleCinemaName, i, cinemaName.ToString(), 0, cinemaName.ToString().Length, true) == 0)
+                        return cinemaName.ToString();
             }
             return "";
         }

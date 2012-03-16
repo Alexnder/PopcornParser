@@ -33,8 +33,12 @@ namespace Popcorn.ServiceLayer
             return false;
         }
 
-        public override void parse(CsvReader csv)
+        public override void Parse(CsvReader csv)
         {
+
+            if (csv.FieldCount < 9)
+                return;
+
             string CurrentHall = "";
 
             while (csv.ReadNextRecord())

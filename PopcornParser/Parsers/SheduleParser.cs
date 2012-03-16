@@ -17,6 +17,6 @@ namespace Popcorn.ServiceLayer
 
         public Cinema cinema;
 
-        public abstract void parse(CsvReader csv);
+        public abstract void Parse(CsvReader csv);
     }
 }
