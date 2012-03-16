@@ -20,14 +20,17 @@ namespace PopcornParser
 
         public static string[] Halls = new string[] { "REGULAR", "VOX MAX", "VOX LD", "VOX GOLD", "IMAX", "The Picturehouse", "Platinum" };
 
-        public static string[] Cinemas = new string[] { "VOX", "GRAND", "ROYAL", "GALLERIA CINEMA", "OSCAR CINEMAS", "BAWADI CINEMAS" };
+        //public static string[] Cinemas = new string[] { "VOX", "GRAND", "ROYAL", "GALLERIA CINEMA", "OSCAR CINEMAS", "BAWADI CINEMAS" };
+        public enum cinemalist { VOX, GRAND, ROYAL, GALLERIA, OSCAR, BAWADI };
             
         static void Main(string[] args)
         {
             
-            SheduleParser parser;
+            SheduleParser parser; 
 
             StreamReader StreamInputCSV;
+
+
             //Parse
             try
             {
@@ -71,9 +74,9 @@ namespace PopcornParser
                                 break;
 
                             case "GRAND":
-                            case "GALLERIA CINEMA":
-                            case "OSCAR CINEMAS":
-                            case "BAWADI CINEMAS":
+                            case "GALLERIA":
+                            case "OSCAR":
+                            case "BAWADI":
                                 {
                                     if (csv.FieldCount > 11 && csv.FieldCount < 15)
                                     {
@@ -101,6 +104,8 @@ namespace PopcornParser
                         try
                         {
                             parser.parse(csv);
+
+                            csv.Dispose();
                         }
                         catch
                         {

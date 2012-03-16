@@ -37,79 +37,6 @@ namespace Popcorn.ServiceLayer
 
         }
 
-        public static bool RoyalParseDate(string TextToSplit, out DateTime Start)
-        {
-            /* 
-             * It is parse time line in Royal's file? and save it in Start
-             * Return true, if all goes well. false otherwise
-             */
-            MatchCollection matches = Regex.Matches(TextToSplit, "\\b(\\w+ \\d+)|\\b(\\d){4}$", RegexOptions.IgnoreCase);
-
-            if (matches.Count == 3)
-            {
-                if (DateTime.TryParseExact(matches[0].Value + " " + matches[2].Value,
-                    "MMM dd yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
-                {
-                    return true;
-                }
-            }
-            Start = new DateTime();
-            return false;
-        }
-
-        public static bool GrandParseDate(string TextToSplit, out DateTime Start)
-        {
-            /* 
-             * It is parse time line in Grand's file? and save it in Start
-             * Return true, if all goes well. false otherwise
-             */
-            if(TextToSplit[2] != ' ')
-                TextToSplit = TextToSplit.Substring(0, 2) + TextToSplit.Substring(4);
-            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+ \\d+)", RegexOptions.IgnoreCase);
-            if (matches.Count == 0)
-            {
-                Start = new DateTime();
-                return false;
-            }
-            if (DateTime.TryParseExact(matches[0].Value,
-                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
-            {
-                return true;
-            }
-            else
-                Console.WriteLine("GrandParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value);
-            
-            return false;
-        }
-
-
-        public static bool VoxParseDate(string TextToSplit, out DateTime Start)
-        {
-            /* 
-             * It is parse time line in Grand's file? and save it in Start
-             * Return true, if all goes well. false otherwise
-             */
-            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
-
-            if (matches.Count < 2)
-            {
-                Start = new DateTime();
-                Console.WriteLine("VoxParseDate() crash");
-                return false;
-            }
-
-            if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
-                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
-            {
-                return true;
-            }
-            else
-                Console.WriteLine("VoxParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
-
-            return false;
-        }
-
-
         public static int ParseMovieDuration(string TextFilmTime)
         {
             /* 
@@ -328,11 +255,11 @@ namespace Popcorn.ServiceLayer
 
         public static string CinemaChoice(string PossibleCinemaName)
         {
-            foreach (string CinemaName in PopcornParser.Program.Cinemas)
+            foreach (PopcornParser.Program.cinemalist CinemaName in Enum.GetValues(typeof(PopcornParser.Program.cinemalist)))
             {
-                for (int i = 0; i <= PossibleCinemaName.Length - CinemaName.Length; i++)
-                    if (string.Compare(PossibleCinemaName, i, CinemaName, 0, CinemaName.Length, true) == 0)
-                        return CinemaName;
+                for (int i = 0; i <= PossibleCinemaName.Length - CinemaName.ToString().Length; i++)
+                    if (string.Compare(PossibleCinemaName, i, CinemaName.ToString(), 0, CinemaName.ToString().Length, true) == 0)
+                        return CinemaName.ToString();
             }
             return "";
         }

@@ -9,7 +9,7 @@ using LumenWorks.Framework.IO.Csv;
 
 namespace Popcorn.ServiceLayer
 {
-    class GrandPoorParser : SheduleParser
+    class GrandPoorParser : GrandParser
     {
         public override void parse(CsvReader csv)
         {
@@ -31,7 +31,7 @@ namespace Popcorn.ServiceLayer
                             csv.ReadNextRecord();
                             if ((index = FieldsParser.OneFieldCheck(csv)) >= 0)
                             {
-                                if (FieldsParser.GrandParseDate(csv[index], out StartDate))
+                                if (GrandParseDate(csv[index], out StartDate))
                                 {
                                     break;
                                 }

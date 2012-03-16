@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Globalization;
 using Popcorn.ServiceLayer;
 using Popcorn.Models.ParsingModels;
 using PopcornParser;
@@ -12,10 +14,37 @@ namespace Popcorn.ServiceLayer
             
     public class VoxParser : SheduleParser
     {
-        int DayCount; //Counter of first row days in VOX file.. Some "Thursday to Saturday" = 3
+       
+        protected static bool VoxParseDate(string TextToSplit, out DateTime Start)
+        {
+            /* 
+             * It is parse time line in Grand's file? and save it in Start
+             * Return true, if all goes well. false otherwise
+             */
+            MatchCollection matches = Regex.Matches(TextToSplit, "^(\\d+ \\w+)\\b|\\b(\\d){4}$", RegexOptions.IgnoreCase);
+
+            if (matches.Count < 2)
+            {
+                Start = new DateTime();
+                Console.WriteLine("VoxParseDate() crash");
+                return false;
+            }
+
+            if (DateTime.TryParseExact(matches[0].Value + " " + matches[1].Value,
+                "dd MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return true;
+            }
+            else
+                Console.WriteLine("VoxParseDate: Before:{0} After:{1}", TextToSplit, matches[0].Value + " " + matches[1].Value);
+
+            return false;
+        }
+
 
         public override void parse(CsvReader csv)
         {
+            int DayCount = -1; //Counter of first row days in VOX file.. Some "Thursday to Saturday" = 3
 
             int index = 0;
 
@@ -46,7 +75,7 @@ namespace Popcorn.ServiceLayer
                 csv.ReadNextRecord();
                 if ((index = FieldsParser.OneFieldCheck(csv)) >= 0)
                 {
-                    if (FieldsParser.VoxParseDate(csv[index], out StartDate))
+                    if (VoxParseDate(csv[index], out StartDate))
                     {
                         break;
                     }
