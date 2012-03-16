@@ -49,6 +49,7 @@
     <Compile Include="Models\Cinema.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Models\SheduleNoteDate.cs" />
+    <Compile Include="Parsers\GrandPoorParser.cs" />
     <Compile Include="Parsers\GrandParser.cs" />
     <Compile Include="Parsers\FieldsParser.cs" />
     <Compile Include="Parsers\RoyalParser.cs" />

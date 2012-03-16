@@ -20,6 +20,10 @@ namespace Popcorn.ServiceLayer
             int index = 0;
 
             string LastFilm = "";
+
+            string CurrentHall = "";
+
+            int HallCredit = 0;
             
             //Parse cinema
             for (int i = 0; i < 8; i++)
@@ -57,10 +61,10 @@ namespace Popcorn.ServiceLayer
                 for (int j = 0; j < csv.FieldCount; j++)
                 {
                     DayCount = FieldsParser.DifferenceDayOfWeek(csv[j]);
-                    if (DayCount > 0)
+                    if (DayCount >= 0)
                         break;
                 }
-                if (DayCount > 0)
+                if (DayCount >= 0)
                         break;
             }
 
@@ -79,8 +83,10 @@ namespace Popcorn.ServiceLayer
                 {
                     if (csv[1 + i * 6] != "" && csv[2 + i * 6] != "")
                     {
+                        
                         if (LastFilm != csv[1 + i * 6])
                         {
+                            //This Movie is not
                             if (!cinema.Movies.Exists(temp_cinema => temp_cinema.Tittle == csv[1 + i * 6]))
                             {
                                 movie = new Movie();
@@ -93,29 +99,47 @@ namespace Popcorn.ServiceLayer
 
                                 cinema.Movies.Add(movie);
                             }
+                            //This Movie is exist
                             else
                             {
                                 movie = cinema.Movies.Find(temp_cinema => temp_cinema.Tittle == csv[1 + i * 6]);
                             }
+
+                            if (HallCredit <= 0)
+                                CurrentHall = "";
+
                         }
 
+                       
+
+                        if (CurrentHall == "")
+                        {
+                            CurrentHall = FieldsParser.HallChoice(csv[0]);
+
+                            if (CurrentHall != "")
+                                HallCredit = 8;
+                        }
+
+                        
+
                         // Parse SheduleNoteDates
-                        for (int k = DayCount * i; k < 6 + (DayCount * (i - 1)); k++)
+                        for (int k = (DayCount + 1) * i; k <= DayCount + i * (6 - DayCount); k++)
                         {
                             if ((FieldsParser.ParseMovieStartTime(csv[2 + i * 6], out CurrentDate)) == 1)
                             {
                                 SheduleNoteDate NoteDate = new SheduleNoteDate();
                                 NoteDate.DateTimeStart = StartDate.AddHours(CurrentDate.Hour).AddMinutes(CurrentDate.Minute).AddDays(k + FieldsParser.IsMidnight(CurrentDate.Hour));
-                                NoteDate.Hall = FieldsParser.HallChoice(csv[0]);
+                                NoteDate.Hall = CurrentHall;
                                 movie.SheduleNoteDates.Add(NoteDate);
 
                             }
                         }
 
                         LastFilm = csv[1 + i * 6];
-
                     }
                 }
+
+                HallCredit--;
             }
 
             Program.CinemaList.Add(cinema);

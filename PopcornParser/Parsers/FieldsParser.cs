@@ -191,6 +191,29 @@ namespace Popcorn.ServiceLayer
                 return 1;
             }
 
+            //It is to GrandPoorParser
+            if (DateTime.TryParseExact(TextToSplit,
+                "hh:mm:tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
+            else if (DateTime.TryParseExact(TextToSplit,
+                "h:mm:tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
+            //It is to GrandPoorParser
+            if (DateTime.TryParseExact(TextToSplit,
+                "hh:mmtt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
+            else if (DateTime.TryParseExact(TextToSplit,
+                "h:mmtt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
+            {
+                return 1;
+            }
+
             if (DateTime.TryParseExact(TextToSplit,
             "hh:mm:ss tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out Start))
             {
@@ -240,7 +263,7 @@ namespace Popcorn.ServiceLayer
 
             if (String.Compare(DayOfWeek.Monday.ToString(), TextDayPresent) == 0)
                 return 1;
-            if (String.Compare(DayOfWeek.Thursday.ToString(), TextDayPresent) == 0)
+            if (String.Compare(DayOfWeek.Tuesday.ToString(), TextDayPresent) == 0)
                 return 2;
             if (String.Compare(DayOfWeek.Wednesday.ToString(), TextDayPresent) == 0)
                 return 3;
@@ -274,7 +297,12 @@ namespace Popcorn.ServiceLayer
 
                     if ((result = DayOfWeekNumber(matches[1].Value)) > 0)
 
-                        return (result - increment + 6) % 7;
+                        return (result - increment + 7) % 7;
+            }
+
+            if (matches.Count == 1)
+            {
+                return 0;
             }
             
             return -1;
@@ -291,12 +319,23 @@ namespace Popcorn.ServiceLayer
         {
             foreach (string HallName in PopcornParser.Program.Halls)
             {
-                if (string.Compare(PossibleHallName, 0, HallName, 0, HallName.Length, true) == 0)
-                    return HallName;
+                for (int i=0; i <= PossibleHallName.Length - HallName.Length; i++)
+                    if (string.Compare(PossibleHallName, i, HallName, 0, HallName.Length, true) == 0)
+                        return HallName;
             }
             return "";
         }
 
+        public static string CinemaChoice(string PossibleCinemaName)
+        {
+            foreach (string CinemaName in PopcornParser.Program.Cinemas)
+            {
+                for (int i = 0; i <= PossibleCinemaName.Length - CinemaName.Length; i++)
+                    if (string.Compare(PossibleCinemaName, i, CinemaName, 0, CinemaName.Length, true) == 0)
+                        return CinemaName;
+            }
+            return "";
+        }
     }
 }
 

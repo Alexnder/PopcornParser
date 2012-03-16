@@ -9,7 +9,7 @@ using LumenWorks.Framework.IO.Csv;
 
 namespace Popcorn.ServiceLayer
 {
-    class GrandParser : SheduleParser
+    class GrandPoorParser : SheduleParser
     {
         public override void parse(CsvReader csv)
         {
@@ -49,45 +49,19 @@ namespace Popcorn.ServiceLayer
                     //Parse Movies
                     while (csv.ReadNextRecord())
                     {
-                        if (csv[1] != "" && csv[2] != "")
+                        if (csv[0] != "" && csv[1] != "")
                         {
                             movie = new Movie();
                             movie.Tittle = csv[1];
-                            movie.TimeInMinutes = FieldsParser.ParseMovieDuration(csv[2]);
-                            movie.Rating = csv[3];
+                            //movie.TimeInMinutes = FieldsParser.ParseMovieDuration(csv[2]);
+                            movie.Rating = csv[2];
 
-                            //Filling of SheduleNoteDates
-                            int Factor = 0;
-                            int LastHour = 0;
-                            bool MidnightFlag = false;
 
-                            for (int i = 4; i < csv.FieldCount; i++)
+                            for (int i = 3; i < csv.FieldCount; i++)
                             {
                                 if (csv[i] != "")
                                 {
-                                    if ((index = FieldsParser.ParseMovieStartTime(csv[i], out CurrentDate)) == 0)
-                                    {
-                                        if ((MidnightFlag == true) && (CurrentDate.Hour == 12))
-                                        {
-                                            Factor++;
-                                        }
-
-                                        if (CurrentDate.Hour < LastHour)
-                                        {
-                                            MidnightFlag = true;
-
-                                            Factor++;
-                                        }
-
-                                        //If the movie starts in the afternoon
-                                        if (i == 6 && csv[5] == "" && CurrentDate.Hour < 6)
-                                            Factor++;
-
-                                        LastHour = CurrentDate.Hour;
-                                        CurrentDate = CurrentDate.AddHours(Factor * 12);
-
-                                    }
-                                    if (index >= 0)
+                                    if ((index = FieldsParser.ParseMovieStartTime(csv[i], out CurrentDate)) >= 0)
                                     {
                                         //Add all days of week 
                                         for (double day = 0; day < 7; day++)
@@ -96,30 +70,22 @@ namespace Popcorn.ServiceLayer
                                             SheduleNoteDate NoteDate = new SheduleNoteDate();
                                             NoteDate.DateTimeStart = StartDate + new TimeSpan(CurrentDate.Hour, CurrentDate.Minute, CurrentDate.Second);
 
-                                            if (Factor == 2)
-                                                NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
-                                            if (csv[5] == "" && csv[6] == "")
-                                                NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddHours(12);
+                                            if (CurrentDate.Hour < 3)
+                                                NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddDays(1);
 
                                             NoteDate.DateTimeStart = NoteDate.DateTimeStart.AddDays(day);
 
                                             NoteDate.Hall = FieldsParser.HallChoice(csv[0]);
-
+                                        
                                             movie.SheduleNoteDates.Add(NoteDate);
 
                                         }
                                     }
+                                    
                                 }
                             }
 
                             cinema.Movies.Add(movie);
-                        }
-                        if ((index = FieldsParser.OneFieldCheck(csv)) > 0)
-                        {
-                            Program.CinemaList.Add(cinema);
-                            cinema = new Cinema();
-                            cinema.Name = csv[index];
-                            break;
                         }
                     }  
                 }
